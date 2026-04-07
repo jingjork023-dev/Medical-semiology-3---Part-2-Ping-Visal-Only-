@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Surgery & Semiology Quizzes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .quiz-card { transition: all 0.3s ease; }
+        .option-btn { transition: all 0.2s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Navigation Header -->
+    <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-tight">Medical semiology 3 - Part 2 (Ping Visal Only)</h1>
+            <button onclick="showHome()" class="text-sm bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded transition">Home</button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <!-- Home Screen: Category Selection -->
+        <div id="home-screen" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="col-span-full mb-4">
+                <h2 class="text-2xl font-bold text-slate-800">Select a Topic</h2>
+                <p class="text-slate-500">Test your knowledge on Gastrointestinal conditions.</p>
+            </div>
+            <!-- Category Buttons will be injected here -->
+        </div>
+
+        <!-- Quiz Interface -->
+        <div id="quiz-interface" class="hidden">
+            <div class="bg-white rounded-2xl shadow-sm p-6 mb-4 border border-slate-200">
+                <div class="flex justify-between items-center mb-6">
+                    <span id="category-title" class="text-blue-600 font-semibold uppercase tracking-wider text-xs">Topic</span>
+                    <span id="progress-text" class="text-slate-400 text-sm font-medium">Question 1/20</span>
+                </div>
+                
+                <div id="question-container">
+                    <h3 id="question-text" class="text-xl text-slate-800 font-semibold mb-6 leading-snug">Question content goes here?</h3>
+                    <div id="options-list" class="space-y-3">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+
+                <div id="feedback-area" class="mt-8 hidden border-t pt-6">
+                    <div id="feedback-box" class="p-4 rounded-xl mb-4"></div>
+                    <button id="next-btn" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-lg">Next Question</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden text-center bg-white rounded-3xl shadow-xl p-10 border border-slate-100">
+            <div class="w-24 h-24 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Quiz Complete!</h2>
+            <p id="final-score-text" class="text-5xl font-black text-blue-600 my-6">18/20</p>
+            <p id="performance-msg" class="text-slate-500 mb-8 italic">Excellent work, doctor!</p>
+            <button onclick="showHome()" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-800 transition">Return to Topics</button>
+        </div>
+
+    </main>
+
+    <script>
+        const quizData = {
+            "gastrointestinal-perforation": {
+                title: "Gastrointestinal Perforation",
+                questions: [
+                    { q: "What is the medical definition of a gastrointestinal perforation?", a: ["An inflammation of the stomach lining.", "A blockage in the small intestine.", "A hole in the wall of part of the gastrointestinal tract.", "A benign tumour in the large intestine."], c: 2 },
+                    { q: "How does the onset of pain typically differ based on the location of the perforation?", a: ["Large intestine onset is sudden; stomach onset is gradual.", "Stomach/small intestine onset is typically sudden; large intestine onset may be more gradual.", "Both are always gradual.", "Both are always sudden."], c: 1 },
+                    { q: "Which of the following describes the nature of the pain in most cases?", a: ["Intermittent and cramping.", "Vague and sharp.", "Usually constant.", "Only present during movement."], c: 2 },
+                    { q: "Which clinical signs are associated with the development of sepsis in these patients?", a: ["Increased heart rate, increased breathing rate, fever, and confusion.", "Decreased heart rate and low body temperature.", "Improved mental clarity and slow breathing.", "High blood pressure and decreased heart rate."], c: 0 },
+                    { q: "Which of the following is NOT listed as an underlying cause of perforation?", a: ["Gastric and duodenal ulcers.", "Typhoid fever and GI cancer.", "Use of non-steroidal anti-inflammatory drugs (NSAIDs).", "Excessive intake of vitamin C."], c: 3 },
+                    { q: "How can 'eating multiple magnets' lead to a perforation?", a: ["They cause a chemical burn in the stomach.", "They attract and stick to one another through different loops of the intestine.", "They increase the acidity of the stomach.", "They block the bile duct."], c: 1 },
+                    { q: "What are typical physical examination findings for the abdomen in a perforation case?", a: ["Soft, non-tender, and hyperactive bowel sounds.", "Flat, soft, and no guarding.", "Slightly distended, hypoactive bowel sounds, and involuntary muscle guarding.", "Concave and completely painless."], c: 2 },
+                    { q: "Sudden pain in the epigastrium to the right of the midline specifically indicates the perforation of what?", a: ["A gastric ulcer.", "A duodenal ulcer.", "The appendix.", "The sigmoid colon."], c: 1 },
+                    { q: "A gastric ulcer perforation often reveals itself through burning pain in the epigastrium accompanied by:", a: ["Jaundice and weight loss.", "Flatulence and dyspepsia.", "Lower back pain and cough.", "Skin rash and headache."], c: 1 },
+                    { q: "Gastrointestinal perforation results in severe abdominal pain that is intensified by:", a: ["Lying perfectly still.", "Movement.", "Drinking water.", "Sleep."], c: 1 },
+                    { q: "What physical sign describes the abdomen becoming hard and firm to the touch?", a: ["Distension.", "Rigidity.", "Peristalsis.", "Tympany."], c: 1 },
+                    { q: "Once the abdomen becomes 'silent,' what unusual clinical sign can sometimes be heard all over the abdomen?", a: ["Bowel sounds.", "Heart sounds.", "Lung sounds.", "Stomach gurgling."], c: 1 },
+                    { q: "On an X-ray, what is a key indicator of a perforation?", a: ["Visible bone fractures.", "Large amounts of fluid in the lungs.", "Gas visible in the abdominal cavity.", "A visible heart murmur."], c: 2 },
+                    { q: "In what position is gas most easily visualised in the abdominal cavity on an X-ray?", a: ["Prone (lying on stomach).", "Upright.", "Supine (lying on back).", "Left lateral decubitus only."], c: 1 },
+                    { q: "Which laboratory result is commonly elevated in patients with a perforation?", a: ["Red blood cell count.", "White blood cell count.", "Platelet count.", "Blood sugar level."], c: 1 },
+                    { q: "What is the primary medical therapy (pre-operative) for a patient with signs of dehydration or septicaemia?", a: ["Immediate oral feeding.", "Keep the patient NPO, establish IV access, and initiate crystalloid therapy.", "Physical therapy and bed rest.", "High-fibre diet and exercise."], c: 1 },
+                    { q: "What loading dose of Gentamicin is recommended for adults before surgery?", a: ["1 mg/kg IV.", "2 mg/kg IV.", "5 mg/kg IV.", "10 mg/kg IV."], c: 1 },
+                    { q: "Which surgical procedure is nearly always required to treat the condition?", a: ["Appendectomy.", "Cholectystectomy.", "Exploratory laparotomy and closure of perforation with peritoneal wash.", "Liver transplant."], c: 2 },
+                    { q: "What is a 'Graham patch' used for?", a: ["Repairing the heart.", "Covering a skin wound.", "Duodenal perforations.", "Appendix removal."], c: 2 },
+                    { q: "The removal of a portion of the small or large intestine may result in which outcome?", a: ["A colostomy or ileostomy.", "Immediate weight gain.", "Enhanced digestion.", "Permanent loss of heart sounds."], c: 0 }
+                ]
+            },
+            "hemorrhoids": {
+                title: "Hemorrhoids",
+                questions: [
+                    { q: "In their normal state, what is the primary function of hemorrhoid cushions?", a: ["To sense temperature", "To assist with stool control", "To increase speed of defecation", "To provide lubrication"], c: 1 },
+                    { q: "Which type of hemorrhoid is characterized by painless, bright red rectal bleeding during defecation?", a: ["Thrombosed external", "Chronic anal fissures", "Internal hemorrhoids", "Rectal tumors"], c: 2 },
+                    { q: "In a normal anal canal, where are the three main cushions classically located?", a: ["Left lateral, right anterior, right posterior", "Right lateral, left anterior, left posterior", "Posterior midline and anterior midline", "Left lateral, left anterior, right anterior"], c: 0 },
+                    { q: "The hemorrhoidal plexus is composed of a set of blood vessels, connective tissue, and:", a: ["Internal anal sphincter", "Smooth muscle", "Striated muscle", "Lymphatic nodes"], c: 1 },
+                    { q: "Hemorrhoid cushions contribute what percentage to anal closure pressure at rest?", a: ["5–10%", "15–20%", "30–40%", "50–60%"], c: 1 },
+                    { q: "External hemorrhoids originate from which specific vascular structure?", a: ["Superior hemorrhoidal plexus", "Middle rectal vein", "Inferior hemorrhoidal plexus", "Superior rectal artery"], c: 2 },
+                    { q: "If an external hemorrhoid is thrombosed, how long does the pain typically take to resolve?", a: ["12–24 hours", "2 to 3 days", "7 to 10 days", "4 weeks"], c: 1 },
+                    { q: "What is the clinical term for blood that covers the stool during a bowel movement?", a: ["Hematemesis", "Hemoptysis", "Hematochezia", "Hematuria"], c: 2 },
+                    { q: "Under what condition do internal hemorrhoids usually become painful?", a: ["During every bowel movement", "Only if they become thrombosed or necrotic", "When classified as Grade I", "Always sensitive to touch"], c: 1 },
+                    { q: "Which activity is believed to potentially increase the risk of severe hemorrhoids?", a: ["Squatting while defecating", "Regular cardiovascular exercise", "Sleeping on one's back", "High-fiber dieting"], c: 0 },
+                    { q: "Why is surgical treatment for hemorrhoids rarely necessary for pregnant women?", a: ["Strictly contraindicated", "Symptoms usually resolve after delivery", "Hormones naturally shrink vessels", "Fetal pressure protects cushions"], c: 1 },
+                    { q: "Differentiation between internal and external hemorrhoids is based on their position relative to the:", a: ["Levator ani muscle", "Columns of Morgagni", "Pectinate (dentate) line", "Superior valve of Houston"], c: 2 },
+                    { q: "Internal hemorrhoids lack pain receptors because they are covered by:", a: ["Squamous epithelium", "Anoderm", "Columnar epithelium", "Cutaneous nerves"], c: 2 },
+                    { q: "According to the 1985 classification, what defines a Grade II internal hemorrhoid?", a: ["No prolapse", "Prolapse upon bearing down, spontaneous reduction", "Prolapse requiring manual reduction", "Permanent prolapse"], c: 1 },
+                    { q: "Which grade of internal hemorrhoid requires manual reduction?", a: ["Grade I", "Grade II", "Grade III", "Grade IV"], c: 2 },
+                    { q: "What is the primary characteristic of a Grade IV internal hemorrhoid?", a: ["Bleeds only", "Reduces spontaneously", "Permanent prolapse, cannot be manually reduced", "Found only below dentate line"], c: 2 },
+                    { q: "External hemorrhoids are sensitive to pain and temperature because they are covered by:", a: ["Columnar epithelium", "Anoderm and skin", "Mucous membranes", "Internal sphincter muscle"], c: 1 },
+                    { q: "Which diagnostic procedure is typically required for visual confirmation of internal hemorrhoids?", a: ["Visual inspection", "Digital rectal exam", "Anoscopy", "Abdominal ultrasound"], c: 2 },
+                    { q: "Which anorectal problem can present similarly to hemorrhoids?", a: ["Anal fissures", "Colorectal cancer", "Rectal varices", "All of the above"], c: 3 },
+                    { q: "What is a potential complication of a closed hemorrhoidectomy surgery?", a: ["Urinary retention/UTI", "Immediate resolution of pain", "Fecal incontinence in 95%", "Rapid growth of new cushions"], c: 0 }
+                ]
+            },
+            "intestinal-obstruction": {
+                title: "Intestinal Obstruction",
+                questions: [
+                    { q: "What is the medical definition of intestinal obstruction?", a: ["Permanent paralysis", "Mechanical impairment or complete arrest of passage", "Inflammation of mucosa", "Temporary slowing due to diet"], c: 1 },
+                    { q: "What percentage of partial small-bowel obstructions typically resolve nonoperatively?", a: ["15%", "50%", "75%", "85%"], c: 3 },
+                    { q: "What is the most common cause of mechanical intestinal obstruction?", a: ["Adhesions", "Foreign bodies", "Fecal impaction", "Diverticulitis"], c: 0 },
+                    { q: "How is 'intussusception' defined?", a: ["Twisting of bowel", "Telescoping of one segment into another", "Stricture from malignancy", "Failure of peristalsis"], c: 1 },
+                    { q: "In strangulating obstruction, which event typically occurs first?", a: ["Arterial occlusion", "Gangrene", "Venous obstruction", "Perforation"], c: 2 },
+                    { q: "Strangulating obstruction can progress to gangrene in as little as:", a: ["1 hour", "6 hours", "24 hours", "48 hours"], c: 1 },
+                    { q: "Which symptom is characteristic of small-bowel obstruction but rare in large-bowel?", a: ["Constipation", "Early and profuse vomiting", "Distention", "Obstipation"], c: 1 },
+                    { q: "Severe, steady pain in an obstruction suggests:", a: ["Simple blockage", "Partial obstruction", "Strangulation has occurred", "High small-bowel obstruction"], c: 2 },
+                    { q: "Which finding on auscultation indicates late simple obstruction or strangulation?", a: ["Silent abdomen", "Loud borborygmi", "High-pitched tinkling", "Normal sounds"], c: 0 },
+                    { q: "A 'bird-beak' deformity on contrast enema is a classic sign of:", a: ["Intussusception", "Volvulus", "Tumor", "Crohn's disease"], c: 1 },
+                    { q: "What does gas in the bowel wall (pneumatosis intestinalis) indicate?", a: ["Simple distention", "Gangrene", "Fecal impaction", "High-protein diet"], c: 1 },
+                    { q: "What is the most common site for an intestinal obstruction?", a: ["Duodenum", "Small intestine", "Sigmoid colon", "Rectum"], c: 1 },
+                    { q: "Which X-ray view is necessary to see 'fluid levels'?", a: ["Supine", "Upright", "Prone", "Left lateral only"], c: 1 },
+                    { q: "What percentage of small-bowel obstructions experience strangulation?", a: ["5%", "10%", "25%", "50%"], c: 2 },
+                    { q: "Primary site of abdominal cramps for small-bowel obstruction?", a: ["Umbilicus or epigastrium", "Lower left quadrant", "Right iliac fossa", "Lower back"], c: 0 },
+                    { q: "Which IV fluids are recommended for volume repletion?", a: ["D5W", "0.9% saline or Lactated Ringer's", "Sterile water", "High-glucose"], c: 1 },
+                    { q: "Which antibiotic is recommended before surgery if ischemia is suspected?", a: ["Penicillin", "3rd-generation cephalosporin", "Tetracycline", "Antiviral"], c: 1 },
+                    { q: "What percentage of intestinal obstructions are caused by adhesive disease?", a: ["10%", "20%", "60%", "90%"], c: 2 },
+                    { q: "If a gallstone causes obstruction, how is it removed?", a: ["Cholecystectomy", "Enterotomy", "Laxatives", "Laser lithotripsy"], c: 1 },
+                    { q: "Physical exam of a large-bowel obstruction typically reveals:", a: ["Flat, soft abdomen", "Distended abdomen, loud borborygmi, empty rectum", "Profuse vomiting", "Severe tenderness in every case"], c: 1 }
+                ]
+            },
+            "pancreatitis": {
+                title: "Pancreatitis Semiology",
+                questions: [
+                    { q: "Where is the pancreas located?", a: ["Lower pelvic region", "Behind the stomach in upper abdomen", "Left kidney", "Right upper quadrant"], c: 1 },
+                    { q: "Which enzyme aids digestion?", a: ["Pepsin", "Lipase", "Renin", "Gastrin"], c: 1 },
+                    { q: "Defining characteristic of chronic pancreatitis?", a: ["Goes away", "Only in children", "Occurs over many years", "Viral"], c: 2 },
+                    { q: "Which proenzyme is inappropriately activated in acute pancreatitis?", a: ["Proinsulin", "Trypsinogen", "Pepsinogen", "Proelastase"], c: 1 },
+                    { q: "Which enzyme triggers trypsinogen activation?", a: ["Amylase", "Cathepsin", "Glucagon", "Insulin"], c: 1 },
+                    { q: "Symptom specifically associated with chronic pancreatitis?", a: ["Rapid pulse", "Oily, smelly stools (steatorrhea)", "High fever", "Tenderness"], c: 1 },
+                    { q: "Severe acute pancreatitis defined by organ failure lasting:", a: ["<24h", "36h", "<48h", ">48h"], c: 3 },
+                    { q: "Most common causes of acute pancreatitis?", a: ["Smoking", "Gallstones, infections, alcohol misuse", "Dehydration", "High protein"], c: 1 },
+                    { q: "Hemorrhagic discoloration of the umbilicus?", a: ["Grey-Turner's", "Cullen's", "Murphy's", "Rovsing's"], c: 1 },
+                    { q: "Grey-Turner's sign is discoloration of the:", a: ["Neck", "Chest", "Flanks", "Thighs"], c: 2 },
+                    { q: "Auscultation during acute episode typically finds:", a: ["Hyperactive sounds", "Normal rhythmic sounds", "Few or no sounds", "Continuous humming"], c: 2 },
+                    { q: "Diagnosis requirement for serum lipase/amylase activity:", a: ["Equal to normal", "2x upper limit", "3x upper limit", "10x upper limit"], c: 2 },
+                    { q: "Time for amylase levels to return to normal?", a: ["24h", "3-7 days", "8-14 days", "3 weeks"], c: 1 },
+                    { q: "Imaging test for exact gallstone location?", a: ["ERCP", "Chest X-ray", "Ultrasound", "MRI"], c: 0 },
+                    { q: "Primary benefit of CECT scan in pancreatitis?", a: ["Measuring sugar", "Identifying inflammation, fluid, and density", "Detecting lung infection", "Bone density"], c: 1 },
+                    { q: "In MACHINES mnemonic, what does 'N' stand for?", a: ["Normal diet", "Nil by mouth (NPO)", "Nasal oxygen", "Neomycin"], c: 1 },
+                    { q: "Purpose of NG tube in mild acute pancreatitis?", a: ["Nutrition", "Remove liquids/air for nausea/vomiting", "Deliver antibiotics", "Heart rate"], c: 1 },
+                    { q: "Severe pancreatitis increases risk of which heart condition?", a: ["Hypertension", "Hypovolemic shock", "Bradycardia", "Pulmonary embolism"], c: 1 },
+                    { q: "Dietary advice after an episode?", a: ["High-protein", "Healthful, low-fat, small meals", "Fasting", "High-caffeine"], c: 1 },
+                    { q: "Complication with risk of rupture, hemorrhage, or infection?", a: ["Thrombosis", "Pleural effusion", "Pseudocysts", "Bile duct obstruction"], c: 2 }
+                ]
+            },
+            "paralytic-ileus": {
+                title: "Paralytic Ileus",
+                questions: [
+                    { q: "Primary cause of paralytic ileus?", a: ["Blockage by tumor", "Paralysis of intestinal muscles", "Excessive enzymes", "Bacterial overgrowth"], c: 1 },
+                    { q: "Classification of paralytic ileus?", a: ["Mechanical", "Dynamic", "Non-mechanical (functional)", "Closed-loop"], c: 2 },
+                    { q: "Duration of postoperative paralytic ileus?", a: ["12h", "2 to 3 days", "1 week", "Permanent"], c: 1 },
+                    { q: "Preoperative medication risk factor?", a: ["Antibiotics", "Anticholinergics", "Beta-blockers", "Antivirals"], c: 1 },
+                    { q: "Postoperative medication class cause?", a: ["Narcotics (Opioids)", "NSAIDs", "Antifungals", "Diuretics"], c: 0 },
+                    { q: "Electrolyte imbalance risk factor?", a: ["Hyperkalemia", "Hypokalemia", "Hyponatremia", "Hypomagnesemia"], c: 1 },
+                    { q: "Auscultation findings?", a: ["Hyperactive", "High-pitched", "Few or no sounds", "Arterial bruits"], c: 2 },
+                    { q: "Injury above which vertebrae results in hypomotility?", a: ["T1", "T5", "T10", "L2"], c: 1 },
+                    { q: "Metabolic condition risk factor?", a: ["DKA", "Iron anemia", "Hyperthyroidism", "Gout"], c: 0 },
+                    { q: "Stool-like appearance of which symptom is concerning?", a: ["Urine", "Vomiting", "Perspiration", "Saliva"], c: 1 },
+                    { q: "Pain profile in most cases?", a: ["Prominent feature", "Often not a prominent feature", "Radiates to left arm", "Sharp and localized"], c: 1 },
+                    { q: "X-ray gas location?", a: ["Only stomach", "Diffusely through intestine/colon", "Only rectum", "No gas"], c: 1 },
+                    { q: "Difference between ileus and mechanical on contrast?", a: ["Mechanical has no air", "Ileus has no obvious transition point", "Ileus has bird-beak", "Mechanical has fewer levels"], c: 1 },
+                    { q: "Peritoneal sign in prolonged ileus?", a: ["Rigidity and rebound", "Decreased girth", "Increased appetite", "Normal peristalsis"], c: 0 },
+                    { q: "Common term for paralytic ileus?", a: ["Dynamic", "Adynamic", "Acute diverticulitis", "Hyper-motile"], c: 1 },
+                    { q: "Chemotherapy agent cause?", a: ["Aspirin", "Vincristine", "Insulin", "Penicillin"], c: 1 },
+                    { q: "Primary purpose of NG tube in ileus?", a: ["Nutrition", "Decompress stomach and release air", "Medication delivery", "Temperature"], c: 1 },
+                    { q: "Standard treatment for simple adynamic ileus?", a: ["Surgery", "Expectant waiting", "Exercise", "Increased intake"], c: 1 },
+                    { q: "Common physical finding?", a: ["Concave", "Distension", "Visible peristalsis", "Scars"], c: 1 },
+                    { q: "Rapid treatment necessary to prevent:", a: ["Hearing loss", "Perforation and infection", "Fractures", "Infarction"], c: 1 }
+                ]
+            },
+            "peritonitis": {
+                title: "Peritonitis",
+                questions: [
+                    { q: "How is peritonitis defined?", a: ["Gastric mucosa inflammation", "Peritoneum inflammation", "Large intestine obstruction", "Benign growth"], c: 1 },
+                    { q: "Condition present in primary peritonitis?", a: ["Peptic ulcers", "Underlying ascites", "Trauma", "Ruptured appendix"], c: 1 },
+                    { q: "Primary peritonitis (SBP) infection type?", a: ["Polymicrobial", "Monomicrobial", "Fungal", "Viral"], c: 1 },
+                    { q: "Cause of secondary peritonitis?", a: ["Hematogenous", "Spontaneous transmigration", "Hollow organ perforation", "Exercise"], c: 2 },
+                    { q: "Secondary peritonitis bacterial type?", a: ["Anaerobic only", "Aerobic only", "Mixed aerobic and anaerobic", "Chemical only"], c: 2 },
+                    { q: "Chemical peritonitis irritants:", a: ["High-protein", "Blood, bile, urine, or barium", "Water", "Vitamin K"], c: 1 },
+                    { q: "Patient position during exam?", a: ["Fidgeting", "Lying still, knees/hips flexed", "Walking", "Prone"], c: 1 },
+                    { q: "Involuntary guarding suggests:", a: ["Anxiety", "Peritoneal irritation", "Healthy tone", "Voluntary contraction"], c: 1 },
+                    { q: "Rebound tenderness definition:", a: ["Pain at pressure onset", "Pain with removal of pressure", "Radiating pain", "Lack of pain"], c: 1 },
+                    { q: "Bowel sounds in peritonitis:", a: ["Hyperactive", "Sparse or absent", "Normal", "High-pitched"], c: 1 },
+                    { q: "Why is it a surgical emergency?", a: ["Hearing loss", "Sepsis with shock/organ failure", "Rigidity", "Fractures"], c: 1 },
+                    { q: "Neutrophil count for SBP:", a: ["<100", ">250", "500", ">1000"], c: 1 },
+                    { q: "SAAG value for SBP:", a: ["<0.5", ">1.1", "1.0", "Negative"], c: 1 },
+                    { q: "X-ray finding in perforation:", a: ["Bone density", "Free air", "Lung fluid", "Normal gas"], c: 1 },
+                    { q: "Test of choice for visceral abscess:", a: ["X-ray", "Ultrasound", "CT scan", "MRI"], c: 2 },
+                    { q: "First-line antibiotic for primary peritonitis:", a: ["Aspirin", "3rd generation cephalosporins", "Antiseptics", "Vitamin D"], c: 1 },
+                    { q: "Cornerstone principle of surgical treatment:", a: ["Removing intestine", "Early/definitive source control", "Avoiding antibiotics", "Waiting"], c: 1 },
+                    { q: "Antibiotics for severe peritonitis:", a: ["Penicillins", "Carbapenems", "Tetracyclines", "Antivirals"], c: 1 },
+                    { q: "Peritoneal fluid glucose in secondary peritonitis:", a: ["<50 mg/dL", ">200 mg/dL", "Absent", "Higher than serum"], c: 0 },
+                    { q: "Potential complication:", a: ["Paralytic ileus", "Increased appetite", "Improved immune", "Enhanced motility"], c: 0 }
+                ]
+            },
+            "stomach-ulcers": {
+                title: "Stomach Ulcers",
+                questions: [
+                    { q: "Most common symptom of gastric/duodenal ulcers?", a: ["Bloating", "Epigastric pain", "Weight loss", "Vomiting"], c: 1 },
+                    { q: "Time after meal for duodenal ulcer pain?", a: ["Shortly after", "2–3 hours afterward", "5–6 hours afterward", "During meal"], c: 1 },
+                    { q: "Preferred diagnostic test?", a: ["X-ray", "Upper GI endoscopy", "Blood group", "Stool culture"], c: 1 },
+                    { q: "Three types by location:", a: ["Gastric, Intestinal, Colonic", "Hepatic, Pancreatic, Gastric", "Esophageal, Gastric, Duodenal", "Acute, Subacute, Chronic"], c: 2 },
+                    { q: "Peptic ulcer definition depth:", a: ["Epithelium only", "Gel layer", "Muscularis", "Serosa"], c: 2 },
+                    { q: "Aggressive factor:", a: ["Mucus", "Bicarbonate", "NSAIDs", "Prostaglandins"], c: 2 },
+                    { q: "Protective role of PGE:", a: ["Neutralizing acid", "Increasing bicarbonate/mucus", "Stimulating gastrin", "Removing hydrogen"], c: 1 },
+                    { q: "When does pain most often occur?", a: ["Empty stomach", "After water", "Sleeping", "Exercise"], c: 0 },
+                    { q: "Bacteria cause:", a: ["E. coli", "H. pylori", "Salmonella", "Staph"], c: 1 },
+                    { q: "ZES hormone:", a: ["Histamine", "Insulin", "Gastrin", "Pepsin"], c: 2 },
+                    { q: "NSAID mechanism:", a: ["Increasing bacteria", "Blocking protective enzymes", "Burning esophagus", "Heart blood flow"], c: 1 },
+                    { q: "H. pylori characteristic:", a: ["Gram-positive", "Urease/catalase/oxidase production", "Spherical", "Resistance"], c: 1 },
+                    { q: "Blood group predisposition:", a: ["Group A", "Group B", "Group AB", "Group O"], c: 3 },
+                    { q: "Chronic vs Acute feature:", a: ["Resolves quickly", "Superficial", "Fibrous tissue formation", "Less common"], c: 2 },
+                    { q: "Non-invasive 15min H. pylori test:", a: ["Urea Breath Test", "Serology", "Stool antigen", "Endoscopy"], c: 0 },
+                    { q: "H2 blocker mechanism:", a: ["Coating", "Blocking histamine/reducing acid", "Killing bacteria", "Neutralizing acid"], c: 1 },
+                    { q: "PPI superiority over H2 blockers in:", a: ["Gastric", "Duodenal", "Esophageal", "Chronic"], c: 2 },
+                    { q: "Misoprostol pregnancy contraindication:", a: ["Constipation", "Absorption", "Causes miscarriages", "Alcohol levels"], c: 2 },
+                    { q: "Primary goal of treatment:", a: ["Increase acid", "Relieve pain, heal, prevent complications", "Identify blood group", "Weight loss"], c: 1 },
+                    { q: "Major complication:", a: ["Perforation", "Hypertension", "Diabetes", "Hearing loss"], c: 0 }
+                ]
+            }
+        };
+
+        let currentCategory = "";
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function init() {
+            const home = document.getElementById('home-screen');
+            Object.keys(quizData).forEach(key => {
+                const card = document.createElement('div');
+                card.className = "quiz-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 cursor-pointer hover:shadow-md hover:border-blue-300 group";
+                card.onclick = () => startQuiz(key);
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-blue-50 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <span class="text-xs font-bold text-slate-400">20 QUESTIONS</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-1">${quizData[key].title}</h3>
+                    <p class="text-sm text-slate-500">Comprehensive semiology and management quiz.</p>
+                `;
+                home.appendChild(card);
+            });
+        }
+
+        function startQuiz(key) {
+            currentCategory = key;
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('quiz-interface').classList.remove('hidden');
+            document.getElementById('category-title').innerText = quizData[key].title;
+            loadQuestion();
+        }
+
+        function showHome() {
+            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('quiz-interface').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+        }
+
+        function loadQuestion() {
+            const data = quizData[currentCategory].questions[currentQuestionIndex];
+            document.getElementById('progress-text').innerText = `Question ${currentQuestionIndex + 1}/${quizData[currentCategory].questions.length}`;
+            document.getElementById('question-text').innerText = data.q;
+            
+            const optionsList = document.getElementById('options-list');
+            optionsList.innerHTML = '';
+            
+            data.a.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 rounded-xl border-2 border-slate-100 bg-slate-50 text-slate-700 font-medium hover:border-blue-200 hover:bg-white focus:outline-none";
+                btn.innerText = option;
+                btn.onclick = () => handleAnswer(index);
+                optionsList.appendChild(btn);
+            });
+
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function handleAnswer(selectedIndex) {
+            const data = quizData[currentCategory].questions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            const feedbackArea = document.getElementById('feedback-area');
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackArea.classList.remove('hidden');
+
+            if (selectedIndex === data.c) {
+                score++;
+                buttons[selectedIndex].classList.replace('border-slate-100', 'border-green-500');
+                buttons[selectedIndex].classList.add('bg-green-50');
+                feedbackBox.className = "p-4 rounded-xl mb-4 bg-green-100 text-green-800 font-bold";
+                feedbackBox.innerHTML = "✓ Correct Answer!";
+            } else {
+                buttons[selectedIndex].classList.replace('border-slate-100', 'border-red-500');
+                buttons[selectedIndex].classList.add('bg-red-50');
+                buttons[data.c].classList.replace('border-slate-100', 'border-green-500');
+                buttons[data.c].classList.add('bg-green-50');
+                feedbackBox.className = "p-4 rounded-xl mb-4 bg-red-100 text-red-800 font-bold";
+                feedbackBox.innerHTML = `✗ Incorrect. The correct answer was: ${data.a[data.c]}`;
+            }
+
+            document.getElementById('next-btn').onclick = nextQuestion;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData[currentCategory].questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-interface').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            const total = quizData[currentCategory].questions.length;
+            document.getElementById('final-score-text').innerText = `${score}/${total}`;
+            
+            const percentage = (score / total) * 100;
+            let msg = "";
+            if (percentage >= 90) msg = "Exceptional! Superior clinical knowledge.";
+            else if (percentage >= 70) msg = "Great job! Strong understanding of the material.";
+            else if (percentage >= 50) msg = "Passed. Good effort, but review recommended.";
+            else msg = "Keep studying. Focus on the semiology details.";
+            
+            document.getElementById('performance-msg').innerText = msg;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
